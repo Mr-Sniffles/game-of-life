@@ -1,8 +1,13 @@
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class CellWorld {
 	
-	private PropertyChangeSupport propChangeSupp;
+	//##########################################################################
+	//	Global Variables/Constants
+	//##########################################################################
+	
+	private PropertyChangeSupport propertyChangeSupport;
 	
 	public static final int ALIVE = 1;
 	public static final int DEAD = 0;
@@ -14,10 +19,13 @@ public class CellWorld {
 
 	private int bornMin, bornMax, surviveMin, surviveMax;
 
-	// ~ Constructors ----------------------------------------------------------
+	
+	//##########################################################################
+	//	Constructors
+	//##########################################################################
 
 	public CellWorld() {
-		tickCount = 0;
+		this.init();
 
 		size = 10;
 		world = new int[size][size];
@@ -28,7 +36,7 @@ public class CellWorld {
 	}
 
 	public CellWorld(int sz) {
-		tickCount = 0;
+		this.init();
 
 		size = sz;
 		world = new int[size][size];
@@ -39,7 +47,7 @@ public class CellWorld {
 	}
 
 	public CellWorld(int[][] worldConfig) {
-		tickCount = 0;
+		this.init();
 
 		world = worldConfig.clone();
 		size = world.length;
@@ -50,7 +58,7 @@ public class CellWorld {
 	}
 
 	public CellWorld(int[][] worldConfig, String ruleSet) {
-		tickCount = 0;
+		this.init();
 
 		world = worldConfig.clone();
 		size = world.length;
@@ -58,12 +66,20 @@ public class CellWorld {
 		this.parseRuleSet(ruleSet);
 	}
 
-	// Format: B#(#)/S#(#)
+	private void init() {
+		tickCount = 0;
+		propertyChangeSupport = new PropertyChangeSupport(this);
+	}
+	
+	// Format: B#(#)/S#(#); TODO
 	private void parseRuleSet(String ruleSet) {
 		// TODO
 	}
 
-	// ~ Methods ---------------------------------------------------------------
+	
+	//##########################################################################
+	//	Model Methods
+	//##########################################################################
 
 	public int getWorldSize() {
 		return size;
@@ -137,4 +153,21 @@ public class CellWorld {
 
 		return out.toString();
 	}
+	
+	
+	//##########################################################################
+	//	Notification Support Methods
+	//##########################################################################
+	
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
 }

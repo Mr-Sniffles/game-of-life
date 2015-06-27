@@ -14,8 +14,6 @@ import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
 public class GOLView extends JFrame {
-
-	private final GOLController controller;
 	
 	private JPanel gridPanel;
 	private JPanel[][] grid;
@@ -26,8 +24,6 @@ public class GOLView extends JFrame {
 	private JSlider speedAdjust;
 	
 	public GOLView() {
-		controller  = new GOLController(new CellWorld());
-		
 		init();
 	}
 	
@@ -84,8 +80,4 @@ public class GOLView extends JFrame {
 			}
 		}
 	}*/
-	
-	public static void main(String[] args) {
-		new GOLView();
-	}
 }

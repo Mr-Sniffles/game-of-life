@@ -6,8 +6,17 @@ public class GOLController {
 	private ArrayList<GOLView> views;
 	private ArrayList<CellWorld> models;
 	
-	public GOLController(CellWorld model) {
+	public GOLController() {
+		views = new ArrayList<GOLView>();
+		models = new ArrayList<CellWorld>();
+	}
+	
+	public GOLController(CellWorld model, GOLView view) {
+		views = new ArrayList<GOLView>();
+		models = new ArrayList<CellWorld>();
+		
 		this.addModel(model);
+		this.addView(view);
 	}
 
 	// change to comply to MVC design?
@@ -17,6 +26,10 @@ public class GOLController {
 	
 	public void addModel(CellWorld model) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	public void addView(GOLView view) {
 		
 	}
 }
