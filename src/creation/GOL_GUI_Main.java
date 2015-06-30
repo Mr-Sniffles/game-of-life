@@ -6,6 +6,15 @@ import util.GOLErrorHandler;
 import util.GOLFileParser;
 
 
+/* TODO:
+ * Features to implement:
+ * 	- Reset button
+ * 	- GUI world building
+ *  - text box speed input?
+ *  - custom rulesets
+ *  - more??
+ */
+
 public class GOL_GUI_Main {
 	public static void main(String[] args) {
 		
@@ -22,6 +31,7 @@ public class GOL_GUI_Main {
 		CellWorld model = new CellWorld(world);
 		
 		GOLController controller = new GOLController(view, model);
+		controller.beginSimulation();
 	}
 	
 	

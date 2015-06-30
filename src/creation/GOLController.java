@@ -1,8 +1,14 @@
 package creation;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import util.GOLErrorHandler;
 
-public class GOLController{
+public class GOLController {
 	
 	//##########################################################################
 	//	Global Variables/Constants
@@ -11,6 +17,10 @@ public class GOLController{
 	private GOLView view;
 	private CellWorld model;
 	
+	// in milliseconds
+	private int simulationDelay;
+	
+	private boolean isRunning;
 	
 	//##########################################################################
 	//	Constructors
@@ -34,20 +44,15 @@ public class GOLController{
 	//##########################################################################
 	
 	private void init() {
-		view.resizeGrid(model.getWorldSize());
+		simulationDelay = 100;
+		isRunning = false;
 		
-		while( model.getTickCount() < 100 ) {
-			
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				System.exit(GOLErrorHandler.THREAD_INTERRUPT_ERROR);
-			}
-			
-			model.tick();
-			this.updateViewGrid();
-		}
+		view.resizeGrid(model.getWorldSize());
+		this.updateViewGrid();
+		
+		view.addSpeedAdjustListener(new SpeedAdjustListener());
+		view.addStartStopToggleListener(new StartStopToggleListener());
+		view.addResetButtonListener(new ResetButtonListener());
 	}
 	
 	//##########################################################################
@@ -62,6 +67,11 @@ public class GOLController{
 		this.view = view;
 	}
 	
+	public void beginSimulation() {
+		Thread simThread = new Thread( new SimulationLoop() );
+		simThread.start();
+	}
+	
 	private void updateViewGrid() {
 		for(int x=0;x<model.getWorldSize();x++) {
 			for(int y=0;y<model.getWorldSize();y++) {
@@ -69,5 +79,66 @@ public class GOLController{
 			}
 		}
 	}
+
 	
+	//##########################################################################
+	//	Internal Classes
+	//##########################################################################
+	
+	class SpeedAdjustListener implements ChangeListener{
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			simulationDelay = view.getSpeedAdjustValue();
+		}
+		
+	}
+	
+	class StartStopToggleListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			isRunning = !isRunning;
+			if( isRunning ) {
+				view.setStartStopToggleText("Stop");
+			} else {
+				view.setStartStopToggleText("Start");
+			}
+		}
+
+	}
+	
+	class ResetButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO
+		}
+
+	}
+	
+	class SimulationLoop implements Runnable {
+
+		@Override
+		public void run() {
+			
+			while( true ) {
+				
+				if( isRunning ) {
+					try {
+						Thread.sleep(simulationDelay);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						System.exit(GOLErrorHandler.THREAD_INTERRUPT_ERROR);
+					}
+					//System.out.println(".");
+					model.tick();
+					updateViewGrid();
+				}
+				System.out.print(""); //keep-alive
+			}
+			
+		}
+		
+	}
 }

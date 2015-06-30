@@ -28,7 +28,7 @@ public class GOLView extends JFrame {
 	
 	private JPanel controlPanel;
 	private JButton startStopToggle;
-	private JButton reset;
+	private JButton resetButton;
 	private JSlider speedAdjust;
 	
 	
@@ -71,13 +71,17 @@ public class GOLView extends JFrame {
 		controlPanel = new JPanel();
 		
 		speedAdjust = new JSlider(0, 1000, 100);
+		speedAdjust.setMajorTickSpacing(200);
+		speedAdjust.setMinorTickSpacing(50);
+		speedAdjust.setPaintTicks(true);
+		speedAdjust.setPaintLabels(true);
 		controlPanel.add(speedAdjust);
 		
 		startStopToggle = new JButton("Start");
 		controlPanel.add(startStopToggle);
 		
-		reset = new JButton("Reset");
-		controlPanel.add(reset);
+		resetButton = new JButton("Reset");
+		controlPanel.add(resetButton);
 		
 		this.add(controlPanel, BorderLayout.PAGE_END);
 		
@@ -89,6 +93,14 @@ public class GOLView extends JFrame {
 	//##########################################################################
 	//	View Methods
 	//##########################################################################
+	
+	public int getSpeedAdjustValue() {
+		return speedAdjust.getValue();
+	}
+	
+	public void setStartStopToggleText(String text) {
+		startStopToggle.setText(text);
+	}
 	
 	public void resizeGrid(int newSize) {
 		gridPanel.setVisible(false);
@@ -132,4 +144,7 @@ public class GOLView extends JFrame {
 		startStopToggle.addActionListener(listener);
 	}
 	
+	public void addResetButtonListener(ActionListener listener) {
+		resetButton.addActionListener(listener);
+	}
 }
