@@ -12,6 +12,7 @@ import util.GOLFileParser;
  * 	- GUI world building
  *  - text box speed input?
  *  - custom rulesets
+ *  - Saving/Loading
  *  - more??
  */
 

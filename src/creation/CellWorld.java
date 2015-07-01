@@ -13,6 +13,7 @@ public class CellWorld {
 	private long tickCount;
 
 	private int size;
+	private int[][] initialWorld;
 	private int[][] world;
 
 	private int bornMin, bornMax, surviveMin, surviveMax;
@@ -26,6 +27,7 @@ public class CellWorld {
 		tickCount = 0;
 
 		size = 10;
+		initialWorld = new int[size][size];
 		world = new int[size][size];
 
 		bornMin = bornMax = 3;
@@ -37,6 +39,7 @@ public class CellWorld {
 		tickCount = 0;
 
 		size = sz;
+		initialWorld = new int[size][size];
 		world = new int[size][size];
 
 		bornMin = bornMax = 3;
@@ -47,6 +50,7 @@ public class CellWorld {
 	public CellWorld(int[][] worldConfig) {
 		tickCount = 0;
 
+		initialWorld = worldConfig.clone();
 		world = worldConfig.clone();
 		size = world.length;
 		
@@ -57,7 +61,8 @@ public class CellWorld {
 
 	public CellWorld(int[][] worldConfig, String ruleSet) {
 		tickCount = 0;
-
+		
+		initialWorld = worldConfig.clone();
 		world = worldConfig.clone();
 		size = world.length;
 
@@ -119,6 +124,10 @@ public class CellWorld {
 			world[x][y] = state;
 		}
 	}
+	
+	public void invertCellState(int x, int y) {
+		world[x][y] = (world[x][y] + 1) % 2;
+	}
 
 	public void tick() {
 		int[][] nextGen = new int[size][size];
@@ -145,6 +154,17 @@ public class CellWorld {
 		tickCount++;
 	}
 
+	public void reset() {
+		world = initialWorld.clone();
+		tickCount = 0;
+	}
+	
+	public void clear() {
+		initialWorld = new int[size][size];
+		world = new int[size][size];
+		tickCount = 0;
+	}
+	
 	public long getTickCount() {
 		return tickCount;
 	}
