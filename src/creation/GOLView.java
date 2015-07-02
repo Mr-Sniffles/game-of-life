@@ -7,7 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -30,22 +30,18 @@ public class GOLView extends JFrame {
 	//##########################################################################
 	//	Global Variables/Constants
 	//##########################################################################
-	
+
 	private JMenuBar menuBar;
-	private ArrayList<JMenu> menuList;
-	//private ArrayList<JMenuItem> fileMenuItems;
+	private JMenu fileMenu;
+	private JMenuItem saveItem, loadItem, resizeItem;
 	
 	private JPanel gridPanel;
 	private CellPanel[][] grid;
 	private int gridSize;
-	private Color aliveCellColor;
-	private Color deadCellColor;
-	private Color cellBorderColor;
+	private Color aliveCellColor, deadCellColor, cellBorderColor;
 	
 	private JPanel controlPanel;
-	private JButton startStopToggle;
-	private JButton resetButton;
-	private JButton clearButton;
+	private JButton startStopToggle, resetButton, clearButton;
 	private JSlider speedAdjust;
 	private JTextField speedDisplay;
 	
@@ -85,35 +81,29 @@ public class GOLView extends JFrame {
 	
 	private void initMenu() {
 		menuBar = new JMenuBar();
-		menuList = new ArrayList<JMenu>();
 		
-		//TODO
-		JMenu m = new JMenu("File");
-		//fileMenuItems = new ArrayList<JMenuItem>();
 		
-		JMenuItem item = new JMenuItem("Save World..", 
+		// --- start file menu ---
+		fileMenu = new JMenu("File");
+		
+		saveItem = new JMenuItem("Save World..", 
 				new ImageIcon(this.getClass().getResource(("/res/saveIcon.png"))));
+		fileMenu.add(saveItem);
 		
-		m.add(item);
-		
-		item = new JMenuItem("Load World..", 
+		loadItem = new JMenuItem("Load World..", 
 				new ImageIcon(this.getClass().getResource("/res/loadIcon.png")));
+		fileMenu.add(loadItem);
 		
-		m.add(item);
-		
-		item = new JMenuItem("Resize World..", 
+		resizeItem = new JMenuItem("Resize World..", 
 				new ImageIcon(this.getClass().getResource("/res/resizeIcon.png")));
-		m.add(item);
+		fileMenu.add(resizeItem);
+		// --- end file menu ---
 		
-		menuList.add(m);
 		
+		menuBar.add(fileMenu);
 		
-		for( JMenu menu : menuList ) {
-			menuBar.add(menu);
-		}
 		this.setJMenuBar(menuBar);
-	}
-	
+	}	
 	private void initGridDisplay() {
 		gridPanel =  new JPanel();
 		
@@ -210,6 +200,8 @@ public class GOLView extends JFrame {
 	public void setStartStopToggleText(String text) {
 		startStopToggle.setText(text);
 	}
+	
+	
 	public void resizeGrid(int newSize) {
 		gridPanel.setVisible(false);
 		
@@ -272,6 +264,18 @@ public class GOLView extends JFrame {
 	//	Listener Methods
 	//##########################################################################
 	
+	public void addSaveItemListener(ActionListener listener) {
+		saveItem.addActionListener(listener);
+	}
+	
+	public void addLoadItemListener(ActionListener listener) {
+		loadItem.addActionListener(listener);
+	}
+	
+	public void addResizeItemListener(ActionListener listener) {
+		resizeItem.addActionListener(listener);
+	}
+	
 	public void addSpeedAdjustListener(ChangeListener listener) {
 		speedAdjust.addChangeListener(listener);
 	}
@@ -295,6 +299,4 @@ public class GOLView extends JFrame {
 	public void addGridCellListener(int x, int y, MouseInputAdapter listener) {
 		grid[x][y].addMouseListener(listener);
 	}
-	
-
 }

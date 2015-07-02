@@ -8,9 +8,7 @@ import util.GOLFileParser;
 
 /* TODO:
  * Features to implement:
- * 	- Reset button
- * 	- GUI world building
- *  - text box speed input?
+ * 	- Cursor drag cell placement
  *  - custom rulesets
  *  - Saving/Loading
  *  - more??
@@ -28,7 +26,7 @@ public class GOL_GUI_Main {
 				world = GOLFileParser.parseWorldFile(args[0]);
 			} catch (IOException e) {
 				e.printStackTrace();
-				System.err.println("Error: Cannot read file. Make sure formatting is correct.");
+				System.err.println("\nError: Cannot read file. Make sure formatting is correct.");
 				System.exit(GOLErrorHandler.FILE_READ_ERROR);
 			}
 			model = new CellWorld(world);

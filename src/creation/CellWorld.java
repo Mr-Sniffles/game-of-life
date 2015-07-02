@@ -123,6 +123,8 @@ public class CellWorld {
 		return size;
 	}
 
+	
+	
 	public int getCellState(int x, int y) {
 		return world[x][y];
 	}
