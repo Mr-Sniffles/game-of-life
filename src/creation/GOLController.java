@@ -3,10 +3,10 @@ package creation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputAdapter;
 
 import util.GOLErrorHandler;
 
@@ -53,6 +53,7 @@ public class GOLController {
 		this.updateViewGrid();
 		
 		view.addSpeedAdjustListener(new SpeedAdjustListener());
+		view.addSpeedDisplayListener(new SpeedDisplayListener());
 		view.addStartStopToggleListener(new StartStopToggleListener());
 		view.addResetButtonListener(new ResetButtonListener());
 		view.addClearButtonListener(new ClearButtonListener());
@@ -112,11 +113,30 @@ public class GOLController {
 	//	Internal Classes
 	//##########################################################################
 	
-	class SpeedAdjustListener implements ChangeListener{
+	class SpeedAdjustListener implements ChangeListener {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			simulationDelay = view.getSpeedAdjustValue();
+			int newSpeed = view.getSpeedAdjustValue();
+			view.setSpeedDisplayText(newSpeed+"");
+			simulationDelay = newSpeed;
+		}
+		
+	}
+	
+	class SpeedDisplayListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int newSpeed = view.getSpeedDisplayValue();
+			if( newSpeed > 1000 ) {
+				newSpeed = 1000;
+			} else if( newSpeed < 0 ) {
+				newSpeed = 0;
+			}
+			
+			view.setSpeedAdjustValue(newSpeed);
+			simulationDelay = newSpeed;
 		}
 		
 	}
@@ -153,7 +173,7 @@ public class GOLController {
 
 	}
 	
-	class GridCellListener implements MouseListener {
+	class GridCellListener extends MouseInputAdapter {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -164,25 +184,17 @@ public class GOLController {
 			view.inverGridCell(x, y);
 			model.invertCellState(x, y);
 		}
-
+		
+		
+		//FIXME
 		@Override
-		public void mouseEntered(MouseEvent e) {
+		public void mouseDragged(MouseEvent e) {
+			CellPanel src = (CellPanel) e.getSource();
+			int x = src.getxPos();
+			int y = src.getyPos();
 			
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			
+			view.inverGridCell(x, y);
+			model.invertCellState(x, y);
 		}
 		
 	}

@@ -21,15 +21,20 @@ public class GOL_GUI_Main {
 		
 		GOLView view = new GOLView();
 		
-		int[][] world = null;
-		try {
-			world = GOLFileParser.parseWorldFile(args[0]);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Error: Cannot read file. Make sure formatting is correct.");
-			System.exit(GOLErrorHandler.FILE_READ_ERROR);
+		CellWorld model = null;
+		if( args.length > 0 ) {
+			int[][] world = null;
+			try {
+				world = GOLFileParser.parseWorldFile(args[0]);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("Error: Cannot read file. Make sure formatting is correct.");
+				System.exit(GOLErrorHandler.FILE_READ_ERROR);
+			}
+			model = new CellWorld(world);
+		} else {
+			model = new CellWorld();
 		}
-		CellWorld model = new CellWorld(world);
 		
 		GOLController controller = new GOLController(view, model);
 		controller.beginSimulation();

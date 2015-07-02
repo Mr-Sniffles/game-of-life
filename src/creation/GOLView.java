@@ -3,9 +3,10 @@ package creation;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -16,8 +17,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputAdapter;
 
 
 
@@ -30,6 +33,7 @@ public class GOLView extends JFrame {
 	
 	private JMenuBar menuBar;
 	private ArrayList<JMenu> menuList;
+	//private ArrayList<JMenuItem> fileMenuItems;
 	
 	private JPanel gridPanel;
 	private CellPanel[][] grid;
@@ -43,6 +47,7 @@ public class GOLView extends JFrame {
 	private JButton resetButton;
 	private JButton clearButton;
 	private JSlider speedAdjust;
+	private JTextField speedDisplay;
 	
 	
 	//##########################################################################
@@ -84,11 +89,21 @@ public class GOLView extends JFrame {
 		
 		//TODO
 		JMenu m = new JMenu("File");
-		m.add(new JMenuItem("Save World..", 
-				new ImageIcon(this.getClass().getResource(("/res/saveIcon.png")))));
+		//fileMenuItems = new ArrayList<JMenuItem>();
 		
-		m.add(new JMenuItem("Load World..", 
-				new ImageIcon(this.getClass().getResource("/res/loadIcon.png"))));
+		JMenuItem item = new JMenuItem("Save World..", 
+				new ImageIcon(this.getClass().getResource(("/res/saveIcon.png"))));
+		
+		m.add(item);
+		
+		item = new JMenuItem("Load World..", 
+				new ImageIcon(this.getClass().getResource("/res/loadIcon.png")));
+		
+		m.add(item);
+		
+		item = new JMenuItem("Resize World..", 
+				new ImageIcon(this.getClass().getResource("/res/resizeIcon.png")));
+		m.add(item);
 		
 		menuList.add(m);
 		
@@ -119,20 +134,37 @@ public class GOLView extends JFrame {
 	}
 	
 	private void initControls() {
-		
-		// --- start control panel ---
 		controlPanel = new JPanel(new GridLayout(1, 2));
+		
+		
+		// --- start slider panel ---
+		JPanel sliderPanel = new JPanel(new GridBagLayout());
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.LINE_START;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.weightx = 1;
+		constraints.gridwidth = 3;
 		
 		speedAdjust = new JSlider(0, 1000, 100);
 		speedAdjust.setMajorTickSpacing(200);
 		speedAdjust.setMinorTickSpacing(50);
 		speedAdjust.setPaintTicks(true);
 		speedAdjust.setPaintLabels(true);
-		JPanel sliderPanel = new JPanel(new BorderLayout());
-		sliderPanel.add(speedAdjust);
+		sliderPanel.add(speedAdjust, constraints);
+		
+		
+		constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.LINE_END;
+		
+		speedDisplay = new JTextField();
+		speedDisplay.setColumns(4);
+		speedDisplay.setHorizontalAlignment(JTextField.CENTER);
+		speedDisplay.setText(speedAdjust.getValue()+"");
+		sliderPanel.add(speedDisplay, constraints);
 		
 		controlPanel.add(sliderPanel);
-		// --- end control panel ---
+		// --- end slider panel ---
 		
 		
 		// --- start button panel ---
@@ -163,10 +195,21 @@ public class GOLView extends JFrame {
 		return speedAdjust.getValue();
 	}
 	
+	public void setSpeedAdjustValue(int speed) {
+		speedAdjust.setValue(speed);
+	}
+	
+	public int getSpeedDisplayValue() {
+		return Integer.parseInt(speedDisplay.getText());
+	}
+	
+	public void setSpeedDisplayText(String text) {
+		speedDisplay.setText(text);
+	}
+	
 	public void setStartStopToggleText(String text) {
 		startStopToggle.setText(text);
 	}
-	
 	public void resizeGrid(int newSize) {
 		gridPanel.setVisible(false);
 		
@@ -233,6 +276,10 @@ public class GOLView extends JFrame {
 		speedAdjust.addChangeListener(listener);
 	}
 	
+	public void addSpeedDisplayListener(ActionListener listener) {
+		speedDisplay.addActionListener(listener);
+	}
+	
 	public void addStartStopToggleListener(ActionListener listener) {
 		startStopToggle.addActionListener(listener);
 	}
@@ -245,7 +292,9 @@ public class GOLView extends JFrame {
 		clearButton.addActionListener(listener);
 	}
 	
-	public void addGridCellListener(int x, int y, MouseListener listener) {
+	public void addGridCellListener(int x, int y, MouseInputAdapter listener) {
 		grid[x][y].addMouseListener(listener);
 	}
+	
+
 }

@@ -29,6 +29,7 @@ public class CellWorld {
 		size = 10;
 		initialWorld = new int[size][size];
 		world = new int[size][size];
+		this.initBlankWorld();
 
 		bornMin = bornMax = 3;
 		surviveMin = 2;
@@ -41,6 +42,7 @@ public class CellWorld {
 		size = sz;
 		initialWorld = new int[size][size];
 		world = new int[size][size];
+		this.initBlankWorld();
 
 		bornMin = bornMax = 3;
 		surviveMin = 2;
@@ -73,6 +75,15 @@ public class CellWorld {
 	//##########################################################################
 	//	Helper Methods
 	//##########################################################################
+	
+	private void initBlankWorld() {
+		for(int x=0;x<size;x++) {
+			for(int y=0;y<size;y++) {
+				initialWorld[x][y] = 0;
+				world[x][y] = 0;
+			}
+		}
+	}
 	
 	// Format: B#(#)/S#(#)
 	private int[] parseRuleSet(String ruleSet) {
