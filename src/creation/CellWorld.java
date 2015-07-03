@@ -200,14 +200,4 @@ public class CellWorld {
 		return out.toString();
 	}
 
-	
-	public void __TEST__() {
-		for(int x=0;x<size;x++) {
-			for(int y=0;y<size;y++) {
-				System.out.print(initialWorld[x][y] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println("\n\n");
-	}
 }
