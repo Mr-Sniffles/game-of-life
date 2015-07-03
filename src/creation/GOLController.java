@@ -3,22 +3,21 @@ package creation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import javax.swing.event.MouseInputAdapter;
 
 import util.GOLErrorHandler;
-import util.GOLFileParser;
+import util.GOLFileHandler;
 
 public class GOLController {
 
-	// ##########################################################################
+	// #########################################################################
 	// Global Variables/Constants
-	// ##########################################################################
+	// #########################################################################
 
 	private GOLView view;
 	private CellWorld model;
@@ -28,9 +27,9 @@ public class GOLController {
 
 	private boolean isRunning;
 
-	// ##########################################################################
+	// #########################################################################
 	// Constructors
-	// ##########################################################################
+	// #########################################################################
 
 	public GOLController() {
 		this.view = null;
@@ -44,9 +43,9 @@ public class GOLController {
 		this.init();
 	}
 
-	// ##########################################################################
+	// #########################################################################
 	// Helper Methods
-	// ##########################################################################
+	// #########################################################################
 
 	private void init() {
 		simulationDelay = 100;
@@ -69,9 +68,9 @@ public class GOLController {
 		view.addClearButtonListener(new ClearButtonListener());
 	}
 
-	// ##########################################################################
+	// #########################################################################
 	// Controller Methods
-	// ##########################################################################
+	// #########################################################################
 
 	public void setModel(CellWorld model) {
 		this.model = model;
@@ -90,8 +89,7 @@ public class GOLController {
 	}
 
 	public void beginSimulation() {
-		Thread simThread = new Thread(new SimulationLoop());
-		simThread.start();
+		new Thread(new SimulationLoop()).start();;
 	}
 
 	private void resetSimulation() {
@@ -118,21 +116,39 @@ public class GOLController {
 		}
 	}
 
-	// ##########################################################################
+	private void loadNewViewGrid() {
+		view.resizeGrid(model.getWorldSize());
+		this.addViewGridListeners();
+		this.updateViewGrid();
+	}
+	
+	private void resizeAll(int resizeValue) {
+		model.resize(resizeValue);
+		view.resizeGrid(resizeValue);
+		this.addViewGridListeners();
+		this.updateViewGrid();
+	}
+
+	// #########################################################################
 	// Internal Classes
-	// ##########################################################################
+	// #########################################################################
 
 	class SaveItemListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			isRunning = false;
-			view.setStartStopToggleText("Stop");
-			try {
-				GOLFileParser.saveWorldFile(model);
-			} catch (IOException exc) {
-				exc.printStackTrace();
-				System.err.println("\nError: Unable to save world.");
+			view.setStartStopToggleText("Start");
+
+			view.showSaveFileChooser();
+			File selection = view.getFileChooserSelection();
+			if (selection != null) {
+				try {
+					GOLFileHandler.saveWorldFile(selection, model);
+				} catch (IOException exc) {
+					exc.printStackTrace();
+					System.err.println("\nError: Unable to save world.");
+				}
 			}
 		}
 
@@ -143,9 +159,21 @@ public class GOLController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			isRunning = false;
-			view.setStartStopToggleText("Stop");
-			
-			//TODO
+			view.setStartStopToggleText("Start");
+
+			view.showLoadFileChooser();
+			File selection = view.getFileChooserSelection();
+			if ( selection != null ) {
+				try {
+					int[][] world = GOLFileHandler.parseWorldFile(selection);
+					model.loadWorld(world);
+					loadNewViewGrid();
+				} catch (IOException exc) {
+					exc.printStackTrace();
+					System.err.println("\nError: Cannot read file. "
+							+ "Make sure formatting is correct.");
+				}
+			}
 		}
 
 	}
@@ -155,9 +183,19 @@ public class GOLController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			isRunning = false;
-			view.setStartStopToggleText("Stop");
-			
-			//TODO
+			view.setStartStopToggleText("Start");
+
+			view.showResizeDialog();
+			String valueString = view.getResizeDialogValue();
+			if( valueString != null ) {
+				try {
+					int resizeValue = Integer.parseInt(valueString);
+					resizeAll(resizeValue);
+				} catch (NumberFormatException exc) {
+					exc.printStackTrace();
+					System.err.println("\nError: Input was not a number");
+				}
+			}
 		}
 
 	}
@@ -194,6 +232,10 @@ public class GOLController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if( model.getTickCount() == 0 ) {
+				model.syncInitialState();
+			}
+			
 			isRunning = !isRunning;
 			if (isRunning) {
 				view.setStartStopToggleText("Stop");
@@ -230,7 +272,7 @@ public class GOLController {
 			int x = src.getxPos();
 			int y = src.getyPos();
 
-			view.inverGridCell(x, y);
+			view.invertGridCell(x, y);
 			model.invertCellState(x, y);
 		}
 
@@ -241,7 +283,7 @@ public class GOLController {
 			int x = src.getxPos();
 			int y = src.getyPos();
 
-			view.inverGridCell(x, y);
+			view.invertGridCell(x, y);
 			model.invertCellState(x, y);
 		}
 

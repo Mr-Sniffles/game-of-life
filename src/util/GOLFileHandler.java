@@ -11,21 +11,15 @@ import java.util.Scanner;
 
 import creation.CellWorld;
 
-public final class GOLFileParser {
+public final class GOLFileHandler {
 
-	private static int saveNumber = 0;
-	
-	// ##########################################################################
-	// Parsing Methods
-	// ##########################################################################
-
-	public static int[][] parseWorldFile(String fileName) throws IOException {
+	public static int[][] parseWorldFile(File fileTarget) throws IOException {
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new FileReader(new File(fileName)));
+			in = new BufferedReader(new FileReader(fileTarget));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			System.err.printf("\nError: Could not find file: %s", fileName);
+			System.err.printf("\nError: Could not find file: %s", fileTarget);
 			System.exit(GOLErrorHandler.FILE_NOT_FOUND_ERROR);
 		}
 
@@ -60,28 +54,33 @@ public final class GOLFileParser {
 		return customWorld;
 	}
 
-	public static void saveWorldFile(CellWorld world) throws IOException{
-		BufferedWriter out = null;
-		
-		out = new BufferedWriter(new FileWriter(new File("GOL_World_Save_"+saveNumber+".txt")));
-		
+	public static void saveWorldFile(File fileTarget, CellWorld world)
+			throws IOException {
+
+		BufferedWriter out = new BufferedWriter(new FileWriter(
+				GOLFileHandler.formatFileName(fileTarget)));
+
 		int size = world.getWorldSize();
-		out.write(size+"\n");
-		
-		for(int x=0;x<size;x++) {
-			for(int y=0;y<size;y++) {
-				out.write(world.getCellState(x, y)+"");
-				if( y != size-1 ) {
+		out.write(size + "\n");
+
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				out.write(world.getCellState(x, y) + "");
+				if (y != size - 1) {
 					out.write(" ");
 				}
 			}
-			
-			if( x != size-1 ) {
+
+			if (x != size - 1) {
 				out.write("\n");
 			}
 		}
-		
+
 		out.close();
-		saveNumber++;
+	}
+
+	public static File formatFileName(File file) {
+		return file.toString().contains(".txt") ? file
+				: new File(file + ".txt");
 	}
 }

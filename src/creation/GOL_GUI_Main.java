@@ -1,16 +1,16 @@
 package creation;
 
+import java.io.File;
 import java.io.IOException;
 
 import util.GOLErrorHandler;
-import util.GOLFileParser;
+import util.GOLFileHandler;
 
 
 /* TODO:
  * Features to implement:
  * 	- Cursor drag cell placement
  *  - custom rulesets
- *  - Saving/Loading
  *  - more??
  */
 
@@ -23,7 +23,7 @@ public class GOL_GUI_Main {
 		if( args.length > 0 ) {
 			int[][] world = null;
 			try {
-				world = GOLFileParser.parseWorldFile(args[0]);
+				world = GOLFileHandler.parseWorldFile(new File(args[0]));
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.err.println("\nError: Cannot read file. Make sure formatting is correct.");

@@ -6,10 +6,10 @@ import javax.swing.JPanel;
 public class CellPanel extends JPanel {
 
 	private int xPos, yPos;
-	
+
 	public CellPanel(int x, int y) {
 		super();
-		
+
 		xPos = x;
 		yPos = y;
 	}
@@ -21,5 +21,5 @@ public class CellPanel extends JPanel {
 	public int getyPos() {
 		return yPos;
 	}
-	
+
 }
