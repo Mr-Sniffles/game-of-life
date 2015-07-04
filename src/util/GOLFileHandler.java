@@ -20,7 +20,7 @@ public final class GOLFileHandler {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.printf("\nError: Could not find file: %s", fileTarget);
-			System.exit(GOLErrorHandler.FILE_NOT_FOUND_ERROR);
+			//System.exit(GOLErrorHandler.FILE_NOT_FOUND_ERROR);
 		}
 
 		int worldSize = 0;
@@ -32,7 +32,7 @@ public final class GOLFileHandler {
 					.printf("\nError: Could not read input file. Make sure that "
 							+ "the first line of the file is the size of your world's grid.");
 			in.close();
-			System.exit(GOLErrorHandler.GRID_SIZE_ERROR);
+			//System.exit(GOLErrorHandler.GRID_SIZE_ERROR);
 		}
 		int[][] customWorld = new int[worldSize][worldSize];
 
@@ -62,19 +62,7 @@ public final class GOLFileHandler {
 
 		int size = world.getWorldSize();
 		out.write(size + "\n");
-
-		for (int x = 0; x < size; x++) {
-			for (int y = 0; y < size; y++) {
-				out.write(world.getCellState(x, y) + "");
-				if (y != size - 1) {
-					out.write(" ");
-				}
-			}
-
-			if (x != size - 1) {
-				out.write("\n");
-			}
-		}
+		out.write(world.toString());
 
 		out.close();
 	}
