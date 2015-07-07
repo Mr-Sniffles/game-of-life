@@ -55,6 +55,8 @@ public class GOLController {
 
 		view.resizeGrid(model.getWorldSize());
 		this.updateViewGrid();
+		view.setPopulationLabelValue(model.getPopulationCount());
+		view.setGenerationLabelValue(model.getTickCount());
 
 		view.addSaveItemListener(new SaveItemListener());
 		view.addLoadItemListener(new LoadItemListener());
@@ -96,17 +98,20 @@ public class GOLController {
 
 	private void resetSimulation() {
 		isRunning = false;
-		view.reset();
+		
 		model.reset();
-
+		
+		view.setPopulationLabelValue(model.getPopulationCount());
+		view.setGenerationLabelValue(model.getTickCount());
+		view.setStartStopToggleText("Start");
 		this.updateViewGrid();
 	}
 
 	private void clearSimulation() {
 		isRunning = false;
-		view.reset();
+		view.clear();
 		model.clear();
-
+		
 		this.updateViewGrid();
 	}
 
@@ -170,6 +175,8 @@ public class GOLController {
 					int[][] world = GOLFileHandler.parseWorldFile(selection);
 					model.loadWorld(world);
 					loadNewViewGrid();
+					view.setPopulationLabelValue(model.getPopulationCount());
+					view.setGenerationLabelValue(model.getTickCount());
 				} catch (IOException exc) {
 					exc.printStackTrace();
 					System.err.println("\nError: Cannot read file. "
@@ -239,7 +246,7 @@ public class GOLController {
 			}
 			
 			isRunning = !isRunning;
-			if (isRunning) {
+			if( isRunning ) {
 				view.setStartStopToggleText("Stop");
 			} else {
 				view.setStartStopToggleText("Start");
@@ -275,11 +282,7 @@ public class GOLController {
 
 			view.invertGridCell(x, y);
 			model.invertCellState(x, y);
-		}
-		
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			this.invertCell(e);
+			view.setPopulationLabelValue(model.getPopulationCount());
 		}
 
 		@Override
@@ -304,7 +307,14 @@ public class GOLController {
 	}
 
 	class SimulationLoop implements Runnable {
-
+		
+		private void update() {
+			model.tick();
+			updateViewGrid();
+			view.setPopulationLabelValue(model.getPopulationCount());
+			view.setGenerationLabelValue(model.getTickCount());
+		}
+		
 		@Override
 		public void run() {
 
@@ -312,9 +322,8 @@ public class GOLController {
 
 				if (isRunning) {
 
-					model.tick();
-					updateViewGrid();
-
+					this.update();
+					
 					try {
 						Thread.sleep(simulationDelay);
 					} catch (InterruptedException e) {

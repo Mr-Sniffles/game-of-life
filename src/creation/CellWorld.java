@@ -27,10 +27,20 @@ public class CellWorld {
 	public static final int DEAD = 0;
 
 	/**
-	 * ticks since initial start of simulation. A tick is synonymous with a
+	 * Ticks since initial start of simulation. A tick is synonymous with a
 	 * generation.
 	 */
 	private long tickCount;
+
+	/**
+	 * Initial population of the world (i.e. number of alive cells) before the
+	 * simulation starts.
+	 */
+	private long initialPopulationCount;
+	/**
+	 * Population of the world (i.e. number of alive cells)
+	 */
+	private long populationCount;
 
 	/**
 	 * Size of the world
@@ -67,6 +77,7 @@ public class CellWorld {
 	 */
 	public CellWorld() {
 		tickCount = 0;
+		populationCount = 0;
 
 		size = 10;
 		initialWorld = new int[size][size];
@@ -86,6 +97,7 @@ public class CellWorld {
 	 */
 	public CellWorld(int sz) {
 		tickCount = 0;
+		populationCount = 0;
 
 		size = sz;
 		initialWorld = new int[size][size];
@@ -110,6 +122,9 @@ public class CellWorld {
 		world = this.duplicateArray(worldConfig);
 		size = world.length;
 
+		initialPopulationCount = this.countInitialWorldPopulation();
+		populationCount = initialPopulationCount;
+
 		bornMin = bornMax = 3;
 		surviveMin = 2;
 		surviveMax = 3;
@@ -131,6 +146,9 @@ public class CellWorld {
 	 * initialWorld = this.duplicateArray(worldConfig); world =
 	 * this.duplicateArray(worldConfig); size = world.length;
 	 * 
+	 * initialPopulationCount = this.countInitialWorldPopulation();
+	 * populationCount = initialPopulationCount;
+	 * 
 	 * this.parseRuleSet(ruleSet); }
 	 */
 
@@ -142,6 +160,24 @@ public class CellWorld {
 	/*
 	 * private int[] parseRuleSet(String ruleSet) { // TODO return new int[0]; }
 	 */
+
+	/**
+	 * Gets the population count of the initial world state
+	 * 
+	 * Note: Should only be used when resetting or initializing worlds
+	 * 
+	 * @return Number of alive cells in the initial world state
+	 */
+	private long countInitialWorldPopulation() {
+		long count = 0;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				count += initialWorld[x][y];
+			}
+		}
+
+		return count;
+	}
 
 	/**
 	 * Gets the number cells that are alive adjacent to the cell at position (x,
@@ -200,6 +236,9 @@ public class CellWorld {
 		world = this.duplicateArray(newWorld);
 		initialWorld = this.duplicateArray(newWorld);
 		size = world.length;
+		initialPopulationCount = this.countInitialWorldPopulation();
+		populationCount = initialPopulationCount;
+		tickCount = 0;
 	}
 
 	/**
@@ -219,6 +258,15 @@ public class CellWorld {
 	 */
 	public int getWorldSize() {
 		return size;
+	}
+
+	/**
+	 * Get the population(alive cell) count
+	 * 
+	 * @return Number of alive cells
+	 */
+	public long getPopulationCount() {
+		return populationCount;
 	}
 
 	/**
@@ -250,6 +298,11 @@ public class CellWorld {
 					+ "expected '0' or '1'.");
 		} else {
 			world[x][y] = state;
+			if( state == CellWorld.ALIVE ) {
+				populationCount++;
+			} else {
+				populationCount--;
+			}
 		}
 	}
 
@@ -264,7 +317,13 @@ public class CellWorld {
 	public void invertCellState(int x, int y) {
 		// (0 + 1) % 2 = 1
 		// (1 + 1) % 2 = 0
-		world[x][y] = (world[x][y] + 1) % 2;
+		int state = (world[x][y] + 1) % 2;
+		world[x][y] = state;
+		if( state == CellWorld.ALIVE ) {
+			populationCount++;
+		} else {
+			populationCount--;
+		}
 	}
 
 	/**
@@ -275,6 +334,7 @@ public class CellWorld {
 	 */
 	public void tick() {
 		int[][] nextGen = new int[size][size];
+		long newPop = 0;
 
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
@@ -284,15 +344,18 @@ public class CellWorld {
 						&& neighborCount >= surviveMin
 						&& neighborCount <= surviveMax) {
 					nextGen[x][y] = CellWorld.ALIVE;
+					newPop++;
 				} else if (this.getCellState(x, y) == CellWorld.DEAD
 						&& neighborCount >= bornMin && neighborCount <= bornMax) {
 					nextGen[x][y] = CellWorld.ALIVE;
+					newPop++;
 				} else {
 					nextGen[x][y] = CellWorld.DEAD;
 				}
 			}
 		}
 
+		populationCount = newPop;
 		world = nextGen;
 
 		tickCount++;
@@ -303,6 +366,7 @@ public class CellWorld {
 	 */
 	public void reset() {
 		world = this.duplicateArray(initialWorld);
+		populationCount = initialPopulationCount;
 		tickCount = 0;
 	}
 
@@ -313,12 +377,14 @@ public class CellWorld {
 		initialWorld = new int[size][size];
 		world = new int[size][size];
 		tickCount = 0;
+		populationCount = initialPopulationCount = 0;
 	}
 
 	/**
 	 * Resize the world to newSize and clear it.
 	 * 
-	 * @param newSize New size of the world
+	 * @param newSize
+	 *            New size of the world
 	 */
 	public void resize(int newSize) {
 		size = newSize;
@@ -330,6 +396,7 @@ public class CellWorld {
 	 */
 	public void syncInitialState() {
 		initialWorld = this.duplicateArray(world);
+		initialPopulationCount = populationCount;
 	}
 
 	/**
@@ -342,7 +409,7 @@ public class CellWorld {
 	}
 
 	/**
-	 * Formats world in a 
+	 * Formats world in a
 	 */
 	public String toString() {
 		StringBuilder out = new StringBuilder();

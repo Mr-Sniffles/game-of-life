@@ -6,13 +6,16 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -47,9 +50,10 @@ public class GOLView extends JFrame {
 	private Color aliveCellColor, deadCellColor, cellBorderColor;
 
 	private JPanel controlPanel;
-	private JButton startStopToggle, resetButton, clearButton;
 	private JSlider speedAdjust;
 	private JTextField speedDisplay;
+	private JButton startStopToggle, resetButton, clearButton;
+	private JLabel populationLabel, generationLabel;
 
 	// #########################################################################
 	// Constructors
@@ -134,14 +138,16 @@ public class GOLView extends JFrame {
 	}
 
 	private void initControls() {
-		controlPanel = new JPanel(new GridLayout(1, 2));
+		controlPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
 
 		// --- start slider panel ---
 		JPanel sliderPanel = new JPanel(new GridBagLayout());
+		sliderPanel.setBorder(BorderFactory.createTitledBorder("Speed Control (ms)"));
 
-		GridBagConstraints constraints = new GridBagConstraints();
+		constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.LINE_START;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 1;
 		constraints.gridwidth = 3;
 
@@ -161,11 +167,36 @@ public class GOLView extends JFrame {
 		speedDisplay.setText(speedAdjust.getValue() + "");
 		sliderPanel.add(speedDisplay, constraints);
 
-		controlPanel.add(sliderPanel);
+		constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.LINE_START;
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 0.9;
+		constraints.insets = new Insets(0, 0, 0, 0);
+
+		controlPanel.add(sliderPanel, constraints);
 		// --- end slider panel ---
+
+		// --- start info panel ---
+		JPanel infoPanel = new JPanel(new BorderLayout());
+		infoPanel.setBorder(BorderFactory.createTitledBorder("Information"));
+
+		populationLabel = new JLabel("Population: --");
+		infoPanel.add(populationLabel, BorderLayout.NORTH);
+
+		generationLabel = new JLabel("Generation: --");
+		infoPanel.add(generationLabel, BorderLayout.SOUTH);
+
+		constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 0.1;
+		constraints.insets = new Insets(0, 10, 0, 10);
+
+		controlPanel.add(infoPanel, constraints);
+		// --- end info panel ---
 
 		// --- start button panel ---
 		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBorder(BorderFactory.createTitledBorder("Simulation Control"));
 
 		startStopToggle = new JButton("Start");
 		buttonPanel.add(startStopToggle);
@@ -176,7 +207,11 @@ public class GOLView extends JFrame {
 		clearButton = new JButton("Clear");
 		buttonPanel.add(clearButton);
 
-		controlPanel.add(buttonPanel);
+		constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.LINE_END;
+		constraints.fill = GridBagConstraints.VERTICAL;
+
+		controlPanel.add(buttonPanel, constraints);
 		// --- end button panel ---
 
 		this.add(controlPanel, BorderLayout.PAGE_END);
@@ -204,6 +239,14 @@ public class GOLView extends JFrame {
 
 	public void setStartStopToggleText(String text) {
 		startStopToggle.setText(text);
+	}
+
+	public void setPopulationLabelValue(long pop) {
+		populationLabel.setText(String.format("Population: %06d", pop));
+	}
+
+	public void setGenerationLabelValue(long gen) {
+		generationLabel.setText(String.format("Generation: %019d", gen));
 	}
 
 	public void resizeGrid(int newSize) {
@@ -250,9 +293,11 @@ public class GOLView extends JFrame {
 		}
 	}
 
-	public void reset() {
+	public void clear() {
 		this.resetGrid();
 		this.setStartStopToggleText("Start");
+		this.setPopulationLabelValue(0);
+		this.setGenerationLabelValue(0);
 	}
 
 	public void setAliveCellColor(Color c) {
