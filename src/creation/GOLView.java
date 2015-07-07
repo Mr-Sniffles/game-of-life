@@ -337,5 +337,6 @@ public class GOLView extends JFrame {
 
 	public void addGridCellListener(int x, int y, MouseInputAdapter listener) {
 		grid[x][y].addMouseListener(listener);
+		grid[x][y].addMouseMotionListener(listener);
 	}
 }

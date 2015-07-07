@@ -8,7 +8,6 @@ import util.GOLFileHandler;
 
 /* TODO:
  * Features to implement:
- * 	- Cursor drag cell placement
  *  - custom rulesets
  *  - more??
  */

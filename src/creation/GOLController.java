@@ -26,6 +26,7 @@ public class GOLController {
 	private int simulationDelay;
 
 	private boolean isRunning;
+	private boolean mouseButtonDown;
 
 	// #########################################################################
 	// Constructors
@@ -50,6 +51,7 @@ public class GOLController {
 	private void init() {
 		simulationDelay = 100;
 		isRunning = false;
+		mouseButtonDown = false;
 
 		view.resizeGrid(model.getWorldSize());
 		this.updateViewGrid();
@@ -265,9 +267,8 @@ public class GOLController {
 	}
 
 	class GridCellListener extends MouseInputAdapter {
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
+		
+		private void invertCell(MouseEvent e) {
 			CellPanel src = (CellPanel) e.getSource();
 			int x = src.getxPos();
 			int y = src.getyPos();
@@ -275,16 +276,29 @@ public class GOLController {
 			view.invertGridCell(x, y);
 			model.invertCellState(x, y);
 		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			this.invertCell(e);
+		}
 
+		@Override
+		public void mousePressed(MouseEvent e) {
+			mouseButtonDown = true;
+			this.invertCell(e);
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			mouseButtonDown = false;
+		}
+		
 		// FIXME
 		@Override
-		public void mouseDragged(MouseEvent e) {
-			CellPanel src = (CellPanel) e.getSource();
-			int x = src.getxPos();
-			int y = src.getyPos();
-
-			view.invertGridCell(x, y);
-			model.invertCellState(x, y);
+		public void mouseEntered(MouseEvent e) {
+			if( mouseButtonDown ) {
+				this.invertCell(e);
+			}
 		}
 
 	}
