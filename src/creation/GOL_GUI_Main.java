@@ -6,8 +6,11 @@ import java.io.IOException;
 import util.GOLErrorHandler;
 import util.GOLFileHandler;
 
+
+
 /* TODO:
  * Features to implement:
+ *  - custom colors
  *  - custom rulesets
  *  - more??
  */
@@ -26,7 +29,7 @@ public class GOL_GUI_Main {
 		GOLView view = new GOLView();
 
 		CellWorld model = null;
-		if (args.length > 0) {
+		if ( args.length > 0 ) {
 			int[][] world = null;
 			try {
 				world = GOLFileHandler.parseWorldFile(new File(args[0]));

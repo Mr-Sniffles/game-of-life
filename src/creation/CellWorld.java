@@ -1,11 +1,11 @@
 package creation;
 
 /**
- * This class represents the model(logic) of a GUI implementation of Conway's
- * Game of Life. The premise of Conway's Game of Life is, given a finite grid
- * and a predetermined ruleset, a generational simulation is performed on a
- * number of placed cells.These cells have two states: dead or alive; the given
- * ruleset determines if a cell lives, dies, or is born between each generation.
+ * Represents the model(logic) of the implementation. The premise of Conway's
+ * Game of Life is, given a finite grid and a predetermined ruleset, a
+ * generational simulation is performed on a number of placed cells.These cells
+ * have two states: dead or alive; the given ruleset determines if a cell lives,
+ * dies, or is born between each generation.
  * 
  * For more information on Conway's Game of Life:
  * https://en.wikipedia.org/wiki/Conway's_Game_of_Life
@@ -21,58 +21,61 @@ public class CellWorld {
 	// #########################################################################
 
 	/**
-	 * Indicates cell state
+	 * Indicates an alive cell
 	 */
-	public static final int ALIVE = 1;
-	public static final int DEAD = 0;
+	public static final int	ALIVE	= 1;
+	/**
+	 * Indicates a dead cell
+	 */
+	public static final int	DEAD	= 0;
 
 	/**
 	 * Ticks since initial start of simulation. A tick is synonymous with a
 	 * generation.
 	 */
-	private long tickCount;
+	private long			tickCount;
 
 	/**
 	 * Initial population of the world (i.e. number of alive cells) before the
 	 * simulation starts.
 	 */
-	private long initialPopulationCount;
+	private long			initialPopulationCount;
 	/**
 	 * Population of the world (i.e. number of alive cells)
 	 */
-	private long populationCount;
+	private long			populationCount;
 
 	/**
 	 * Size of the world
 	 */
-	private int size;
+	private int				size;
 	/**
 	 * The initial state of the world before the simulation starts.
 	 */
-	private int[][] initialWorld;
+	private int[][]			initialWorld;
 	/**
 	 * The current state of the world as the simulation progresses.
 	 */
-	private int[][] world;
+	private int[][]			world;
 
 	/**
-	 * Defines the ruleset of the simulation. If a dead cell is within the range
-	 * of bornMin and bornMax, then that cell is born as an alive cell. If an
-	 * alive cell is within the range of surviveMin and surviveMax, then that
+	 * Defines the rule set of the simulation. If a dead cell is within the
+	 * range of bornMin and bornMax, then that cell is born as an alive cell. If
+	 * an alive cell is within the range of surviveMin and surviveMax, then that
 	 * cell remains alive. In all other cases the cell becomes a dead cell.
 	 * 
-	 * Note: The standard Game of Life is symbolised as "B3/S23": A cell is
-	 * "Born" if it has exactly 3 neighbours, "Stays alive" if it has 2 or 3
-	 * living neighbours; it dies otherwise.
+	 * Note: The standard Game of Life is symbolized as "B3/S23": A cell is
+	 * "Born" if it has exactly 3 neighbors, "Stays alive" if it has 2 or 3
+	 * living neighbors; it dies otherwise.
 	 */
-	private int bornMin, bornMax, surviveMin, surviveMax;
+	private int				bornMin, bornMax, surviveMin, surviveMax;
 
 	// #########################################################################
 	// Constructors
 	// #########################################################################
 
 	/**
-	 * Creates new blank world with a size of ten. Uses default ruleset of
+	 * Creates new blank world with a size of ten. Uses default rule set of
 	 * B3/S23.
 	 */
 	public CellWorld() {
@@ -89,7 +92,7 @@ public class CellWorld {
 	}
 
 	/**
-	 * Creates new blank world with a size of sz. Uses default ruleset of
+	 * Creates new blank world with a size of sz. Uses default rule set of
 	 * B3/S23.
 	 * 
 	 * @param sz
@@ -109,8 +112,10 @@ public class CellWorld {
 	}
 
 	/**
-	 * Creates a world based on a pre-configured setup. Uses default ruleset of
+	 * Creates a world based on a pre-configured setup. Uses default rule set of
 	 * B3/S23.
+	 * 
+	 * @precondition worldConfig is initialized
 	 * 
 	 * @param worldConfig
 	 *            Pre-configured world setup
@@ -131,35 +136,45 @@ public class CellWorld {
 	}
 
 	/**
-	 * TODO Creates a world based on a pre-configured setup. Uses pre-configured
-	 * ruleset.
+	 * TODO: Creates a world based on a pre-configured setup. Uses
+	 * pre-configured rule set.
+	 * 
+	 * @precondition worldConfig is initialized
 	 * 
 	 * @param worldConfig
 	 *            Pre-configured world setup
 	 * 
 	 * @param ruleSet
-	 *            Pre-configured ruleset
+	 *            Pre-configured rule set
 	 */
-	/*
-	 * public CellWorld(int[][] worldConfig, String ruleSet) { tickCount = 0;
-	 * 
-	 * initialWorld = this.duplicateArray(worldConfig); world =
-	 * this.duplicateArray(worldConfig); size = world.length;
-	 * 
-	 * initialPopulationCount = this.countInitialWorldPopulation();
-	 * populationCount = initialPopulationCount;
-	 * 
-	 * this.parseRuleSet(ruleSet); }
-	 */
+	public CellWorld(int[][] worldConfig, String ruleSet) {
+		tickCount = 0;
+
+		initialWorld = this.duplicateArray(worldConfig);
+		world = this.duplicateArray(worldConfig);
+		size = world.length;
+
+		initialPopulationCount = this.countInitialWorldPopulation();
+		populationCount = initialPopulationCount;
+
+		this.parseRuleSet(ruleSet);
+	}
 
 	// #########################################################################
 	// Helper Methods
 	// #########################################################################
 
-	// Format: B#(#)/S#(#)
-	/*
-	 * private int[] parseRuleSet(String ruleSet) { // TODO return new int[0]; }
+	/**
+	 * TODO: Parse a given rule set string for a born range and a survive range
+	 * 
+	 * Format: B#(#)/S#(#)
+	 * 
+	 * @param ruleSet
+	 * @return
 	 */
+	private int[] parseRuleSet(String ruleSet) {
+		return new int[0];
+	}
 
 	/**
 	 * Gets the population count of the initial world state
@@ -183,6 +198,9 @@ public class CellWorld {
 	 * Gets the number cells that are alive adjacent to the cell at position (x,
 	 * y).
 	 * 
+	 * @precondition x and y are positive integers within the bounds of the
+	 *               world size
+	 * 
 	 * @param x
 	 *            X position of cell to check
 	 * @param y
@@ -194,7 +212,7 @@ public class CellWorld {
 
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
-				if (i >= 0 && i < size && j >= 0 && j < size) {
+				if ( i >= 0 && i < size && j >= 0 && j < size ) {
 					neighbors += this.getCellState(i, j);
 				}
 			}
@@ -206,6 +224,8 @@ public class CellWorld {
 
 	/**
 	 * Create a duplicated array equal to an input array
+	 * 
+	 * @precondition arr is initialized
 	 * 
 	 * @param arr
 	 *            Array to duplicate
@@ -229,6 +249,8 @@ public class CellWorld {
 	/**
 	 * Load a pre-configured world setup
 	 * 
+	 * @precondition newWorld is initialized
+	 * 
 	 * @param newWorld
 	 *            Pre-configured world setup
 	 */
@@ -242,14 +264,15 @@ public class CellWorld {
 	}
 
 	/**
-	 * Load a pre-configured ruleset
+	 * TODO: Load a pre-configured rule set
+	 * 
+	 * @precondition ruleSet follows the rule set format specification
 	 * 
 	 * @param ruleSet
-	 *            Pre-configured ruleset
+	 *            Pre-configured rule set
 	 */
-	/*
-	 * public void loadRuleSet(String ruleSet) { // TODO }
-	 */
+	public void loadRuleSet(String ruleSet) {
+	}
 
 	/**
 	 * Get the world size
@@ -272,6 +295,9 @@ public class CellWorld {
 	/**
 	 * Get the state of the cell at (x, y)
 	 * 
+	 * @precondition x and y are positive integers within the bounds of the
+	 *               world size
+	 * 
 	 * @param x
 	 *            X position of cell to check
 	 * @param y
@@ -285,6 +311,9 @@ public class CellWorld {
 	/**
 	 * Set the state of the cell at (x, y)
 	 * 
+	 * @precondition x and y are positive integers within the bounds of the
+	 *               world size; and state is either 0 or 1.
+	 * 
 	 * @param x
 	 *            X position of cell to set
 	 * @param y
@@ -293,12 +322,12 @@ public class CellWorld {
 	 *            The state to set the cell to
 	 */
 	public void setCellState(int x, int y, int state) {
-		if (state != 0 && state != 1) {
+		if ( state != 0 && state != 1 ) {
 			throw new IllegalStateException("Invalid cell state: "
 					+ "expected '0' or '1'.");
 		} else {
 			world[x][y] = state;
-			if( state == CellWorld.ALIVE ) {
+			if ( state == CellWorld.ALIVE ) {
 				populationCount++;
 			} else {
 				populationCount--;
@@ -308,6 +337,9 @@ public class CellWorld {
 
 	/**
 	 * Invert the state of the cell (i.e. 0 -> 1, 1 -> 0)
+	 * 
+	 * @precondition x and y are positive integers within the bounds of the
+	 *               world size
 	 * 
 	 * @param x
 	 *            X position of cell to check
@@ -319,7 +351,7 @@ public class CellWorld {
 		// (1 + 1) % 2 = 0
 		int state = (world[x][y] + 1) % 2;
 		world[x][y] = state;
-		if( state == CellWorld.ALIVE ) {
+		if ( state == CellWorld.ALIVE ) {
 			populationCount++;
 		} else {
 			populationCount--;
@@ -329,8 +361,12 @@ public class CellWorld {
 	/**
 	 * Process the next tick/generation of the world. Each cell is processed in
 	 * in current state and its resulting state in placed in a new world. The
-	 * resulting state is determined by the ruleset of the world. Once all cells
-	 * have been processed set the current the newly generated world.
+	 * resulting state is determined by the rule set of the world. Once all
+	 * cells have been processed set the current the newly generated world.
+	 * 
+	 * @postcondition The world array holds the the generation immediately
+	 *                following its generation at the time of
+	 *                {@link CellWorld#tick()} invocation.
 	 */
 	public void tick() {
 		int[][] nextGen = new int[size][size];
@@ -340,13 +376,13 @@ public class CellWorld {
 			for (int y = 0; y < size; y++) {
 				int neighborCount = this.getNeighborCount(x, y);
 
-				if (this.getCellState(x, y) == CellWorld.ALIVE
+				if ( this.getCellState(x, y) == CellWorld.ALIVE
 						&& neighborCount >= surviveMin
-						&& neighborCount <= surviveMax) {
+						&& neighborCount <= surviveMax ) {
 					nextGen[x][y] = CellWorld.ALIVE;
 					newPop++;
-				} else if (this.getCellState(x, y) == CellWorld.DEAD
-						&& neighborCount >= bornMin && neighborCount <= bornMax) {
+				} else if ( this.getCellState(x, y) == CellWorld.DEAD
+						&& neighborCount >= bornMin && neighborCount <= bornMax ) {
 					nextGen[x][y] = CellWorld.ALIVE;
 					newPop++;
 				} else {
@@ -363,6 +399,8 @@ public class CellWorld {
 
 	/**
 	 * Reset the state of the world to its initial state.
+	 * 
+	 * @postcondition The world array holds the zeroth generation
 	 */
 	public void reset() {
 		world = this.duplicateArray(initialWorld);
@@ -372,6 +410,9 @@ public class CellWorld {
 
 	/**
 	 * Completely clear the world, making all cells dead.
+	 * 
+	 * @postcondition The world array is cleared of all living cells, and the
+	 *                tick and population counts are set to zero.
 	 */
 	public void clear() {
 		initialWorld = new int[size][size];
@@ -383,8 +424,13 @@ public class CellWorld {
 	/**
 	 * Resize the world to newSize and clear it.
 	 * 
+	 * @precondition newSize is greater than zero
+	 * 
 	 * @param newSize
 	 *            New size of the world
+	 * 
+	 * @postcondition The world array is resized to newSize and cleared by
+	 *                {@link CellWorld#clear()}.
 	 */
 	public void resize(int newSize) {
 		size = newSize;
@@ -417,12 +463,12 @@ public class CellWorld {
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
 				out.append(this.getCellState(x, y) + " ");
-				if (y != size - 1) {
+				if ( y != size - 1 ) {
 					out.append(" ");
 				}
 			}
 
-			if (x != size - 1) {
+			if ( x != size - 1 ) {
 				out.append("\n");
 			}
 		}
