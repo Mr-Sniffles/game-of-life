@@ -35,7 +35,7 @@ public class CellPanel extends JPanel {
 	}
 
 	/**
-	 * Get X coordinate of this panel
+	 * Get X coordinate of this panel.
 	 * 
 	 * @return Panel's X coordinate
 	 */
@@ -44,7 +44,7 @@ public class CellPanel extends JPanel {
 	}
 
 	/**
-	 * Get Y coordinate of this panel
+	 * Get Y coordinate of this panel.
 	 * 
 	 * @return Panel's Y coordinate
 	 */

@@ -101,7 +101,7 @@ public final class GOLFileHandler {
 
 	/**
 	 * Write the given world model to file and save it at the given location
-	 * using the file format specification
+	 * using the file format specification.
 	 * 
 	 * @param fileTarget
 	 *            File location to save to
@@ -125,7 +125,7 @@ public final class GOLFileHandler {
 
 	/**
 	 * Format and sanitize given file's name so that it meets file format
-	 * specification
+	 * specification.
 	 * 
 	 * @param file
 	 *            File to format

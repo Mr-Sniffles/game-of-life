@@ -12,19 +12,19 @@ public final class GOLErrorHandler {
 	// ##########################################################################
 
 	/**
-	 * Error value to return when specified file cannot be found
+	 * Error value to return when specified file cannot be found.
 	 */
 	public static final int	FILE_NOT_FOUND_ERROR	= 1;
 	/**
-	 * Error value to return when specified grid size is invalid
+	 * Error value to return when specified grid size is invalid.
 	 */
 	public static final int	GRID_SIZE_ERROR			= 2;
 	/**
-	 * Error value to return when specified file cannot be read
+	 * Error value to return when specified file cannot be read.
 	 */
 	public static final int	FILE_READ_ERROR			= 3;
 	/**
-	 * Error value to return when a thread is unexpectedly interrupted
+	 * Error value to return when a thread is unexpectedly interrupted.
 	 */
 	public static final int	THREAD_INTERRUPT_ERROR	= 4;
 

@@ -223,7 +223,7 @@ public class CellWorld {
 	}
 
 	/**
-	 * Create a duplicated array equal to an input array
+	 * Create a duplicated array equal to an input array.
 	 * 
 	 * @precondition arr is initialized
 	 * 
@@ -247,7 +247,7 @@ public class CellWorld {
 	// #########################################################################
 
 	/**
-	 * Load a pre-configured world setup
+	 * Load a pre-configured world setup.
 	 * 
 	 * @precondition newWorld is initialized
 	 * 
@@ -264,7 +264,7 @@ public class CellWorld {
 	}
 
 	/**
-	 * TODO: Load a pre-configured rule set
+	 * TODO: Load a pre-configured rule set.
 	 * 
 	 * @precondition ruleSet follows the rule set format specification
 	 * 
@@ -284,7 +284,7 @@ public class CellWorld {
 	}
 
 	/**
-	 * Get the population(alive cell) count
+	 * Get the population(alive cell) count.
 	 * 
 	 * @return Number of alive cells
 	 */
@@ -455,7 +455,10 @@ public class CellWorld {
 	}
 
 	/**
-	 * Formats world in a
+	 * Gets the world as a formatted string. This string is compliant with the
+	 * file format specification.
+	 * 
+	 * @return Formatted string representation of the world
 	 */
 	public String toString() {
 		StringBuilder out = new StringBuilder();

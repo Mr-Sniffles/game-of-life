@@ -31,26 +31,26 @@ public class GOLController {
 	// #########################################################################
 
 	/**
-	 * Displays information from the model to the user
+	 * Displays information from the model to the user.
 	 */
 	private GOLView		view;
 	/**
 	 * Holds the logic and data of the simulation and performs simulation
-	 * calculations
+	 * calculations.
 	 */
 	private CellWorld	model;
 
 	/**
-	 * Delay(in milliseconds) between each tick of the simulation
+	 * Delay(in milliseconds) between each tick of the simulation.
 	 */
 	private int			simulationDelay;
 
 	/**
-	 * True if the simulation is running, false otherwise
+	 * True if the simulation is running, false otherwise.
 	 */
 	private boolean		isRunning;
 	/**
-	 * True if the left mouse button is being held down, false if it is not
+	 * True if the left mouse button is being held down, false if it is not.
 	 */
 	private boolean		mouseButtonDown;
 
@@ -68,7 +68,7 @@ public class GOLController {
 	}
 
 	/**
-	 * Initializes a MVC structure given a view and a model
+	 * Initializes a MVC structure given a view and a model.
 	 * 
 	 * @precondition view and model are initialized
 	 * 
@@ -88,25 +88,35 @@ public class GOLController {
 	// Helper Methods
 	// #########################################################################
 
+	/**
+	 * Initialize the controller by connecting listeners to the view and
+	 * initializing local controller variables. Also syncs the view with the
+	 * model.
+	 */
 	private void init() {
 		simulationDelay = 100;
 		isRunning = false;
 		mouseButtonDown = false;
 
+		// sync the view with model data
 		view.resizeGrid(model.getWorldSize());
 		this.updateViewGrid();
 		view.setPopulationLabelValue(model.getPopulationCount());
 		view.setGenerationLabelValue(model.getTickCount());
 
+		// add menu listeners
 		view.addSaveItemListener(new SaveItemListener());
 		view.addLoadItemListener(new LoadItemListener());
 		view.addResizeItemListener(new ResizeItemListener());
 
+		// add cell panel listeners
 		this.addViewGridListeners();
 
+		// add speed listeners
 		view.addSpeedAdjustListener(new SpeedAdjustListener());
 		view.addSpeedDisplayListener(new SpeedDisplayListener());
 
+		// add button control listeners
 		view.addStartStopToggleListener(new StartStopToggleListener());
 		view.addResetButtonListener(new ResetButtonListener());
 		view.addClearButtonListener(new ClearButtonListener());
@@ -116,14 +126,33 @@ public class GOLController {
 	// Controller Methods
 	// #########################################################################
 
+	/**
+	 * Set the controller's underlying model.
+	 * 
+	 * @param model
+	 *            Model to set
+	 */
 	public void setModel(CellWorld model) {
 		this.model = model;
 	}
 
+	/**
+	 * Set the controller's view that will be used to display data from the
+	 * model.
+	 * 
+	 * @param view
+	 *            View to set
+	 */
 	public void setView(GOLView view) {
 		this.view = view;
 	}
 
+	/**
+	 * Add listeners to every cell panel in the view grid display
+	 * 
+	 * @postcondition Each cell panel belonging to the view has a listener
+	 *                attached to it.
+	 */
 	private void addViewGridListeners() {
 		for (int x = 0; x < model.getWorldSize(); x++) {
 			for (int y = 0; y < model.getWorldSize(); y++) {
@@ -132,11 +161,26 @@ public class GOLController {
 		}
 	}
 
+	/**
+	 * Start the simulation loop in a new thread.
+	 * 
+	 * @precondition All required data is initialized and the simulation is
+	 *               ready to begin.
+	 * 
+	 * @postcondition The simulation loop is running.
+	 */
 	public void beginSimulation() {
 		new Thread(new SimulationLoop()).start();
-		;
 	}
 
+	/**
+	 * Reset the simulation to its initial state.
+	 * 
+	 * @precondition All required data is initialized.
+	 * 
+	 * @postcondition The simulation is stopped, the model is reset, and the
+	 *                view displays the data from the new reset model.
+	 */
 	private void resetSimulation() {
 		isRunning = false;
 
@@ -148,6 +192,14 @@ public class GOLController {
 		this.updateViewGrid();
 	}
 
+	/**
+	 * Clear the simulation completely.
+	 * 
+	 * @precondition All required data is initialized.
+	 * 
+	 * @postcondition The simulation is stopped, the model is cleared, and the
+	 *                view displays the data from the new reset model.
+	 */
 	private void clearSimulation() {
 		isRunning = false;
 		view.clear();
@@ -156,6 +208,14 @@ public class GOLController {
 		this.updateViewGrid();
 	}
 
+	/**
+	 * Update all cell panels of the view with the corresponding data from the
+	 * model's world.
+	 * 
+	 * @precondition All required data is initialized.
+	 * 
+	 * @postcondition The view's panel grid is updated to match model's world.
+	 */
 	private void updateViewGrid() {
 		for (int x = 0; x < model.getWorldSize(); x++) {
 			for (int y = 0; y < model.getWorldSize(); y++) {
@@ -164,17 +224,28 @@ public class GOLController {
 		}
 	}
 
+	/**
+	 * Load a new cell panel grid in the view that matches the model's world.
+	 * Should only be called if the new grid is a different size than the
+	 * current one.
+	 * 
+	 * @postcondition View's panel grid is updated to match model's world,
+	 *                including size.
+	 */
 	private void loadNewViewGrid() {
 		view.resizeGrid(model.getWorldSize());
 		this.addViewGridListeners();
 		this.updateViewGrid();
 	}
 
+	/**
+	 * Resize both the model and the view grids to a size of resizeValue
+	 * 
+	 * @param resizeValue New size of the model/view grids
+	 */
 	private void resizeAll(int resizeValue) {
 		model.resize(resizeValue);
-		view.resizeGrid(resizeValue);
-		this.addViewGridListeners();
-		this.updateViewGrid();
+		this.loadNewViewGrid();
 	}
 
 	// #########################################################################

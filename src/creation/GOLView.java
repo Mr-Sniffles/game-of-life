@@ -157,7 +157,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Initializes and displays the menu bar and all sub-components
+	 * Initializes and displays the menu bar and all sub-components.
 	 */
 	private void initMenu() {
 		menuBar = new JMenuBar();
@@ -184,7 +184,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Initializes and displays the grid display
+	 * Initializes and displays the grid display.
 	 */
 	private void initGridDisplay() {
 		gridPanel = new JPanel();
@@ -206,7 +206,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Initializes and displays all controls and information displays
+	 * Initializes and displays all controls and information displays.
 	 */
 	private void initControls() {
 		controlPanel = new JPanel(new GridBagLayout());
@@ -314,7 +314,7 @@ public class GOLView extends JFrame {
 	// #########################################################################
 
 	/**
-	 * Get the value of the simulation speed adjust slider
+	 * Get the value of the simulation speed adjust slider.
 	 * 
 	 * @return Value of speed adjust slider (milliseconds)
 	 */
@@ -323,7 +323,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Set the value of the simulation speed adjust slider
+	 * Set the value of the simulation speed adjust slider.
 	 * 
 	 * @param speed
 	 *            New speed of speed adjust slider
@@ -333,7 +333,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Get the value of the simulation speed display
+	 * Get the value of the simulation speed display.
 	 * 
 	 * @return Value of speed display
 	 */
@@ -342,7 +342,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Set the value of the simulation speed display
+	 * Set the value of the simulation speed display.
 	 * 
 	 * @return text New value of speed display
 	 */
@@ -421,6 +421,8 @@ public class GOLView extends JFrame {
 	 * 
 	 * @param newSize
 	 *            New size of the cell panel grid
+	 * 
+	 * @postcondition Cell panel display grid has size of newSize
 	 */
 	public void resizeGrid(int newSize) {
 		// hide the grid panel until all changes are finished
@@ -446,9 +448,13 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Reset the cell panel display so that all cells are displayed as dead.
+	 * Clear the cell panel display so that all cells are displayed as dead.
+	 * 
+	 * @precondition Cell panels in display grid are initialized
+	 * 
+	 * @postcondition All cell panels display dead cells
 	 */
-	private void resetGrid() {
+	private void clearGrid() {
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
 				grid[x][y].setBackground(deadCellColor);
@@ -459,9 +465,15 @@ public class GOLView extends JFrame {
 	/**
 	 * Clear the current state of the view to its initial state while preserving
 	 * the simulation speed setting and grid size.
+	 * 
+	 * @precondition Cell panels in display grid are initialized
+	 * 
+	 * @postcondition All cell panels display dead cells, start/stop toggle
+	 *                displays "Start", and population & generation labels show
+	 *                zero.
 	 */
 	public void clear() {
-		this.resetGrid();
+		this.clearGrid();
 		this.setStartStopToggleText("Start");
 		this.setPopulationLabelValue(0);
 		this.setGenerationLabelValue(0);
@@ -493,6 +505,11 @@ public class GOLView extends JFrame {
 	 * overwrite if the file already exists.
 	 * 
 	 * @return Option chosen by user(i.e. accept, cancel, etc.)
+	 * 
+	 * @postcondition File chooser's selected file is the file approved by the
+	 *                user. If the user did not approve a file, then the
+	 *                selected file is the last previously held selected
+	 *                file(may be null).
 	 */
 	public int showSaveFileChooser() {
 		int action = fileChooser.showSaveDialog(this);
@@ -565,7 +582,7 @@ public class GOLView extends JFrame {
 	// #########################################################################
 
 	/**
-	 * Add a listener to the save menu item
+	 * Add a listener to the save menu item.
 	 * 
 	 * @param listener
 	 *            Listener to add to the save menu item
@@ -575,7 +592,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the load menu item
+	 * Add a listener to the load menu item.
 	 * 
 	 * @param listener
 	 *            Listener to add to the load menu item
@@ -585,7 +602,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the resize menu item
+	 * Add a listener to the resize menu item.
 	 * 
 	 * @param listener
 	 *            Listener to add to the resize menu item
@@ -595,7 +612,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the simulation speed adjust slider
+	 * Add a listener to the simulation speed adjust slider.
 	 * 
 	 * @param listener
 	 *            Listener to add to the speed adjust slider
@@ -605,7 +622,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the simulation speed display
+	 * Add a listener to the simulation speed display.
 	 * 
 	 * @param listener
 	 *            Listener to add to the speed display
@@ -615,7 +632,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the start/stop toggle button
+	 * Add a listener to the start/stop toggle button.
 	 * 
 	 * @param listener
 	 *            Listener to add to the start/stop toggle button
@@ -625,7 +642,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the reset button
+	 * Add a listener to the reset button.
 	 * 
 	 * @param listener
 	 *            Listener to add to the reset button
@@ -635,7 +652,7 @@ public class GOLView extends JFrame {
 	}
 
 	/**
-	 * Add a listener to the clear button
+	 * Add a listener to the clear button.
 	 * 
 	 * @param listener
 	 *            Listener to add to the clear button
