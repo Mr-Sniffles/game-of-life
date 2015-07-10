@@ -12,6 +12,7 @@ import util.GOLFileHandler;
  * Features to implement:
  *  - custom colors
  *  - custom rulesets
+ *  - error reporting/logging
  *  - more??
  */
 

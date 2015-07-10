@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
@@ -241,7 +242,10 @@ public class GOLController {
 	/**
 	 * Resize both the model and the view grids to a size of resizeValue
 	 * 
-	 * @param resizeValue New size of the model/view grids
+	 * @param resizeValue
+	 *            New size of the model/view grids
+	 * 
+	 * @postcondition Grid of model/view are resized to a size of resizeValue
 	 */
 	private void resizeAll(int resizeValue) {
 		model.resize(resizeValue);
@@ -252,8 +256,15 @@ public class GOLController {
 	// Internal Classes
 	// #########################################################################
 
+	/**
+	 * Listener for view's save menu item.
+	 */
 	class SaveItemListener implements ActionListener {
 
+		/**
+		 * Flag the simulation as not running, adjust appropriate view
+		 * components, and open a save dialog.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			isRunning = false;
@@ -273,8 +284,16 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's load menu item.
+	 */
 	class LoadItemListener implements ActionListener {
 
+		/**
+		 * Flag the simulation as not running, adjust appropriate view
+		 * components, and open a load dialog. Will also update view upon
+		 * loading a world configuration.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			isRunning = false;
@@ -299,8 +318,16 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's resize menu item.
+	 */
 	class ResizeItemListener implements ActionListener {
 
+		/**
+		 * Flag the simulation as not running, adjust appropriate view
+		 * components, and open a resize dialog. Will also check for appropriate
+		 * input. If input is valid, then resize view and model cell grids.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			isRunning = false;
@@ -313,6 +340,9 @@ public class GOLController {
 					int resizeValue = Integer.parseInt(valueString);
 					if ( resizeValue > 0 ) {
 						resizeAll(resizeValue);
+					} else {
+						JOptionPane.showMessageDialog(view,
+								"Size must be a positive integer.");
 					}
 				} catch (NumberFormatException exc) {
 					exc.printStackTrace();
@@ -323,8 +353,15 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's speed adjust slider.
+	 */
 	class SpeedAdjustListener implements ChangeListener {
 
+		/**
+		 * Gets new value from speed adjust slider and updates model and view
+		 * components.
+		 */
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			int newSpeed = view.getSpeedAdjustValue();
@@ -334,8 +371,16 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's speed display.
+	 */
 	class SpeedDisplayListener implements ActionListener {
 
+		/**
+		 * Gets new value from the speed display field and updates model and
+		 * view components. Also sanitizes input that is outside the speed
+		 * adjust slider's range.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int newSpeed = view.getSpeedDisplayValue();
@@ -351,8 +396,16 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's start/stop toggle button.
+	 */
 	class StartStopToggleListener implements ActionListener {
 
+		/**
+		 * Inverts the running flag. If the simulation is being flagged to run
+		 * for the first time(tickCount = 0), then also sets the initial state
+		 * of the model.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if ( model.getTickCount() == 0 ) {
@@ -369,8 +422,14 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's reset button.
+	 */
 	class ResetButtonListener implements ActionListener {
 
+		/**
+		 * Resets the entire simulation to its initial state.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			resetSimulation();
@@ -378,8 +437,14 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's clear button.
+	 */
 	class ClearButtonListener implements ActionListener {
 
+		/**
+		 * Clears the entire simulation to a blank state.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			clearSimulation();
@@ -387,8 +452,18 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Listener for view's cell panel.
+	 */
 	class GridCellListener extends MouseInputAdapter {
 
+		/**
+		 * Helper method that inverts the cell clicked in the model and view,
+		 * and update population count accordingly.
+		 * 
+		 * @param e
+		 *            Event passed by mouse listener
+		 */
 		private void invertCell(MouseEvent e) {
 			CellPanel src = (CellPanel) e.getSource();
 			int x = src.getxPos();
@@ -399,17 +474,28 @@ public class GOLController {
 			view.setPopulationLabelValue(model.getPopulationCount());
 		}
 
+		/**
+		 * Flag the left mouse button as pressed down and invert the cell
+		 * clicked.
+		 */
 		@Override
 		public void mousePressed(MouseEvent e) {
 			mouseButtonDown = true;
 			this.invertCell(e);
 		}
 
+		/**
+		 * Flag the left mouse button as released.
+		 */
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			mouseButtonDown = false;
 		}
 
+		/**
+		 * Invert the cell that the cursor is over if the left mouse button is
+		 * flagged as pressed down.
+		 */
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			if ( mouseButtonDown ) {
@@ -419,8 +505,15 @@ public class GOLController {
 
 	}
 
+	/**
+	 * Simulation control loop. Runs indefinitely once the simulation has been
+	 * initialized and started.
+	 */
 	class SimulationLoop implements Runnable {
 
+		/**
+		 * Perform a model tick and update view with new model data.
+		 */
 		private void update() {
 			model.tick();
 			updateViewGrid();
@@ -428,6 +521,10 @@ public class GOLController {
 			view.setGenerationLabelValue(model.getTickCount());
 		}
 
+		/**
+		 * If the simulation is flagged as running then process model ticks;
+		 * otherwise, simply fire a keep-alive signal.
+		 */
 		@Override
 		public void run() {
 
